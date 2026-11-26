@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101426">
+<title>VYNDORA Virtual City Life</title>
+
+<style>
+:root {
+  --bg:#0c1020;
+  --panel:#171e32;
+  --panel2:#202a43;
+  --text:#f5f3ff;
+  --muted:#aab3ca;
+  --purple:#a78bfa;
+  --pink:#ed9bc5;
+  --gold:#f3c978;
+  --line:#343e5c;
+  --green:#79d6a2;
+  --red:#f18b91;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+header{
+  position:sticky;top:0;z-index:20;
+  background:#101629ee;backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+  padding:13px 4%;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.logo{font-size:21px;font-weight:900;letter-spacing:2px;color:var(--purple)}
+.logo small{display:block;font-size:9px;letter-spacing:3px;color:var(--muted)}
+.header-right{display:flex;align-items:center;gap:10px}
+.money{
+  background:var(--panel2);padding:9px 12px;border-radius:12px;
+  font-size:12px;color:var(--gold);font-weight:bold;
+}
+.menu-button{
+  background:var(--panel2);color:white;border:1px solid var(--line);
+  padding:10px 13px;border-radius:10px;
+}
+nav{
+  display:flex;gap:7px;overflow-x:auto;padding:10px 4%;
+  background:#11182a;border-bottom:1px solid var(--line);
+}
+nav button{
+  flex:none;background:transparent;color:var(--muted);
+  border:1px solid transparent;padding:10px 13px;border-radius:10px;
+}
+nav button.active,nav button:hover{
+  background:var(--panel2);color:white;border-color:var(--line);
+}
+main{max-width:1200px;margin:auto;padding:22px 4% 60px}
+.screen{display:none}
+.screen.active{display:block}
+h1,h2,h3{margin-top:0}
+h1{font-size:clamp(27px,5vw,44px)}
+h2{font-size:24px}
+p{color:var(--muted);line-height:1.6}
+.hero{
+  min-height:300px;border:1px solid var(--line);border-radius:24px;
+  padding:clamp(22px,5vw,48px);
+  background:linear-gradient(120deg,#29204b,#172b42 65%,#172033);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.hero h1{max-width:650px;margin-bottom:8px}
+.hero p{max-width:580px}
+.eyebrow{color:var(--gold);font-size:12px;letter-spacing:3px;font-weight:bold}
+.button{
+  border:0;border-radius:11px;padding:12px 17px;
+  background:linear-gradient(100deg,var(--purple),var(--pink));
+  color:#171226;font-weight:bold;margin:5px 5px 5px 0;
+}
+.button.secondary{
+  background:var(--panel2);color:white;border:1px solid var(--line);
+}
+.button.danger{background:#542c3c;color:#ffe2e5}
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:14px;margin:18px 0;
+}
+.card{
+  background:linear-gradient(145deg,var(--panel),var(--panel2));
+  border:1px solid var(--line);border-radius:17px;padding:18px;
+  min-width:0;
+}
+.card h3{margin-bottom:8px}
+.card p{font-size:14px}
+.card .big{font-size:30px;margin-bottom:12px}
+.tag{
+  display:inline-block;padding:5px 9px;border-radius:20px;
+  background:#393052;color:#d9c8ff;font-size:11px;margin:3px 3px 3px 0;
+}
+.muted{color:var(--muted)}
+.gold{color:var(--gold)}
+.green{color:var(--green)}
+.divider{height:1px;background:var(--line);margin:20px 0}
+.field{margin:13px 0}
+.field label{display:block;color:var(--muted);font-size:13px;margin-bottom:7px}
+.field input,.field select{
+  width:100%;padding:13px;background:#101629;color:white;
+  border:1px solid var(--line);border-radius:10px;
+}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1}
+.choice{
+  border:1px solid var(--line);background:#151d31;color:white;
+  padding:14px;border-radius:12px;text-align:left;width:100%;
+}
+.choice.selected{border-color:var(--purple);background:#30264a}
+#characterCanvas{
+  width:100%;height:390px;display:block;border-radius:16px;
+  background:radial-gradient(circle at 50% 30%,#343657,#11182a 75%);
+}
+.preview-note{font-size:12px;color:var(--muted);margin-top:8px}
+.city-banner{
+  padding:24px;border-radius:17px;
+  background:linear-gradient(120deg,#243a50,#292044);
+  border:1px solid var(--line);margin-bottom:18px;
+}
+.stat{font-size:25px;font-weight:bold;color:var(--gold)}
+.listing{display:flex;flex-direction:column;gap:10px}
+.listing-item{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  background:#11182a;border:1px solid var(--line);
+  border-radius:12px;padding:14px;
+}
+.listing-item p{margin:5px 0;font-size:13px}
+.small{font-size:12px;color:var(--muted)}
+.phone{
+  max-width:390px;margin:10px auto;padding:18px;
+  border:5px solid #525b72;border-radius:30px;background:#101629;
+  min-height:470px;
+}
+.phone-top{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+.phone-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.phone-app{
+  background:var(--panel2);border:1px solid var(--line);border-radius:14px;
+  text-align:center;padding:15px 5px;color:white;font-size:12px;
+}
+.phone-app span{display:block;font-size:25px;margin-bottom:7px}
+footer{
+  border-top:1px solid var(--line);padding:24px 4%;
+  text-align:center;color:var(--muted);font-size:12px;
+}
+.notice{
+  background:#2b2740;border:1px solid #554777;color:#e3d9ff;
+  padding:13px;border-radius:12px;font-size:13px;line-height:1.5;
+}
+.hidden{display:none!important}
+@media(max-width:600px){
+  header{padding:11px 4%}
+  .logo{font-size:17px}
+  .money{font-size:10px;padding:8px}
+  main{padding-top:16px}
+  #characterCanvas{height:330px}
+  .listing-item{align-items:flex-start}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">VYNDORA<small>VIRTUAL CITY LIFE</small></div>
+  <div class="header-right">
+    <div class="money" id="headerMoney">₦1,000,000 demo</div>
+    <button class="menu-button" onclick="toggleMenu()">☰</button>
+  </div>
+</header>
+
+<nav id="mainNav">
+  <button class="active" data-screen="home" onclick="showScreen('home')">Home</button>
+  <button data-screen="character" onclick="showScreen('character')">Character</button>
+  <button data-screen="world" onclick="showScreen('world')">World</button>
+  <button data-screen="properties" onclick="showScreen('properties')">Properties</button>
+  <button data-screen="life" onclick="showScreen('life')">Life</button>
+  <button data-screen="jobs" onclick="showScreen('jobs')">Jobs</button>
+  <button data-screen="business" onclick="showScreen('business')">Business</button>
+  <button data-screen="garage" onclick="showScreen('garage')">Garage</button>
+  <button data-screen="phone" onclick="showScreen('phone')">Phone</button>
+</nav>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="screen active">
+  <div class="hero">
+    <div class="eyebrow">YOUR WORLD. YOUR STORY.</div>
+    <h1>Welcome to VYNDORA Virtual City Life</h1>
+    <p>Create your character, explore cities, find a home, build a career, own businesses and create your own life.</p>
+    <div>
+      <button class="button" onclick="showScreen('character')">Create your character</button>
+      <button class="button secondary" onclick="showScreen('world')">Explore the world</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="big">🌍</div><h3>Explore cities</h3><p>Discover Lagos and prepare for international destinations.</p><button class="button secondary" onclick="showScreen('world')">Explore</button></div>
+    <div class="card"><div class="big">🏡</div><h3>Find your home</h3><p>Choose a neighbourhood and browse homes to rent or buy.</p><button class="button secondary" onclick="showScreen('properties')">View homes</button></div>
+    <div class="card"><div class="big">💼</div><h3>Build your career</h3><p>Explore work opportunities and business ideas.</p><button class="button secondary" onclick="showScreen('jobs')">Find work</button></div>
+    <div class="card"><div class="big">🚘</div><h3>Get moving</h3><p>Explore the vehicle collection and garage foundation.</p><button class="button secondary" onclick="showScreen('garage')">Visit garage</button></div>
+  </div>
+  <div class="notice">This is your local game prototype. Your progress is saved in this browser only. Online accounts, multiplayer and secure currency are not connected yet.</div>
+</section>
+
+<!-- CHARACTER -->
+<section id="character" class="screen">
+  <div class="eyebrow">YOUR IDENTITY</div>
+  <h1>Create your character</h1>
+  <p>Choose your character and customise your starting look. Starter outfit choices are free.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>3D character preview</h3>
+      <canvas id="characterCanvas"></canvas>
+      <div class="preview-note" id="modelStatus">Preparing your 3D character preview… Drag the character to rotate.</div>
+      <div class="row">
+        <button class="button secondary" onclick="chooseModel('male')">Casual Man</button>
+        <button class="button secondary" onclick="chooseModel('female')">Casual Woman</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Character details</h3>
+      <div class="field"><label>Character name</label><input id="characterName" maxlength="24" placeholder="Enter your character name"></div>
+      <div class="field"><label>Character</label>
+        <select id="characterGender" onchange="chooseModel(this.value)">
+          <option value="male">Male</option><option value="female">Female</option>
+        </select>
+      </div>
+      <div class="field"><label>Skin tone</label>
+        <select id="skinTone">
+          <option>Natural</option><option>Light</option><option>Medium</option><option>Deep</option>
+        </select>
+      </div>
+      <div class="field"><label>Starter fashion style</label>
+        <select id="outfitStyle">
+          <option>Casual</option><option>Streetwear</option><option>Traditional</option><option>Smart Fashion</option>
+        </select>
+      </div>
+      <div class="field"><label>Top colour</label><input id="topColor" type="color" value="#6e72c8"></div>
+      <div class="field"><label>Trousers colour</label><input id="trouserColor" type="color" value="#252b40"></div>
+      <div class="field"><label>Shoes colour</label><input id="shoeColor" type="color" value="#171717"></div>
+      <button class="button" onclick="saveCharacter()">Save character profile</button>
+      <p class="small" id="characterMessage">One character per account is the planned game rule. Accounts are not connected in this prototype.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WORLD -->
+<section id="world" class="screen">
+  <div class="eyebrow">THE WORLD IS OPENING</div>
+  <h1>Choose your city</h1>
+  <p>Lagos is the first city planned for development. Other cities are future destinations.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="big">🇳🇬</div><h3>Lagos, Nigeria</h3><span class="tag">First city</span>
+      <p>Explore neighbourhoods inspired by the energy and diversity of Lagos.</p>
+      <button class="button" onclick="enterCity('Lagos')">Enter Lagos</button>
+    </div>
+    <div class="card"><div class="big">🇬🇧</div><h3>London, UK</h3><span class="tag">Planned</span><p>Historic streets, modern districts and international city life.</p><button class="button secondary" onclick="futureCity('London')">View destination</button></div>
+    <div class="card"><div class="big">🇺🇸</div><h3>New York, USA</h3><span class="tag">Planned</span><p>Skyscrapers, taxis, entertainment and busy neighbourhoods.</p><button class="button secondary" onclick="futureCity('New York')">View destination</button></div>
+    <div class="card"><div class="big">🇦🇪</div><h3>Dubai, UAE</h3><span class="tag">Planned</span><p>Luxury districts, modern architecture and desert surroundings.</p><button class="button secondary" onclick="futureCity('Dubai')">View destination</button></div>
+  </div>
+  <div class="city-banner">
+    <div class="eyebrow">CURRENT LOCATION</div>
+    <h2 id="currentCity">No city selected</h2>
+    <p id="currentNeighbourhood">Choose a city to begin your journey.</p>
+  </div>
+  <h2>Explore Lagos neighbourhoods</h2>
+  <div class="grid">
+    <div class="card"><div class="big">🌴</div><h3>Lekki</h3><p>Modern estates, beaches and lifestyle destinations.</p><button class="button secondary" onclick="chooseNeighbourhood('Lekki')">Choose Lekki</button></div>
+    <div class="card"><div class="big">🏙️</div><h3>Ikeja</h3><p>Business districts, shopping and residential areas.</p><button class="button secondary" onclick="chooseNeighbourhood('Ikeja')">Choose Ikeja</button></div>
+    <div class="card"><div class="big">🏘️</div><h3>Surulere</h3><p>Community life, local businesses and entertainment.</p><button class="button secondary" onclick="chooseNeighbourhood('Surulere')">Choose Surulere</button></div>
+    <div class="card"><div class="big">🌆</div><h3>Victoria Island</h3><p>Offices, hotels, luxury homes and nightlife.</p><button class="button secondary" onclick="chooseNeighbourhood('Victoria Island')">Choose Victoria Island</button></div>
+  </div>
+</section>
+
+<!-- PROPERTIES -->
+<section id="properties" class="screen">
+  <div class="eyebrow">FIND YOUR PLACE</div>
+  <h1>Properties</h1>
+  <p>Browse sample homes in your chosen neighbourhood. Prices are illustrative prototype values.</p>
+  <div class="city-banner">
+    <h2 id="propertyArea">Lagos</h2>
+    <p>Choose whether you want to rent or buy.</p>
+    <div class="row">
+      <button class="button" onclick="setPropertyMode('Rent')">Rent a home</button>
+      <button class="button secondary" onclick="setPropertyMode('Buy')">Buy a home</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="field"><label>Property category</label>
+      <select id="propertyCategory" onchange="renderProperties()">
+        <option value="all">All homes</option><option value="Affordable">Affordable</option><option value="Midrange">Midrange</option><option value="Luxury">Luxury</option>
+      </select>
+    </div>
+    <div class="field"><label>Property type</label>
+      <select id="propertyType" onchange="renderProperties()">
+        <option value="all">All types</option><option value="Apartment">Apartment</option><option value="House">House</option><option value="Duplex">Duplex</option>
+      </select>
+    </div>
+  </div>
+  <div id="propertyListings" class="grid"></div>
+  <div class="notice">Choosing a property here records a local demo selection only. It does not make a real purchase, rent agreement or wallet deduction.</div>
+</section>
+
+<!-- LIFE -->
+<section id="life" class="screen">
+  <div class="eyebrow">YOUR VYNDORA LIFE</div>
+  <h1>Life dashboard</h1>
+  <div class="grid">
+    <div class="card"><p>Demo local currency</p><div class="stat" id="lifeBalance">₦1,000,000</div><span class="small">Preview balance only</span></div>
+    <div class="card"><p>V-Coins</p><div class="stat" id="coinBalance">0</div><span class="small">Demo only</span></div>
+    <div class="card"><p>Your home</p><h3 id="lifeHome">No home selected</h3><span class="small">Saved on this browser</span></div>
+    <div class="card"><p>Your career</p><h3 id="lifeJob">No job selected</h3><span class="small">Saved on this browser</span></div>
+  </div>
+  <h2>Daily life</h2>
+  <div class="grid">
+    <div class="card"><div class="big">📱</div><h3>Smartphone</h3><p>Open your in-game phone.</p><button class="button secondary" onclick="showScreen('phone')">Open phone</button></div>
+    <div class="card"><div class="big">💼</div><h3>Work</h3><p>Find a career and earn demo rewards.</p><button class="button secondary" onclick="showScreen('jobs')">Find jobs</button></div>
+    <div class="card"><div class="big">🏪</div><h3>Business</h3><p>Explore business ownership.</p><button class="button secondary" onclick="showScreen('business')">Businesses</button></div>
+    <div class="card"><div class="big">🚘</div><h3>Vehicles</h3><p>Visit your garage.</p><button class="button secondary" onclick="showScreen('garage')">Garage</button></div>
+  </div>
+</section>
+
+<!-- JOBS -->
+<section id="jobs" class="screen">
+  <div class="eyebrow">BUILD YOUR CAREER</div>
+  <h1>Jobs and activities</h1>
+  <p>Choose a demo career. Completing a demo activity adds local prototype currency only.</p>
+  <div id="jobListings" class="grid"></div>
+  <div class="card">
+    <h3>Current job</h3><p id="currentJob">You have not selected a job yet.</p>
+    <button class="button" onclick="completeWork()">Complete a demo work shift</button>
+    <p class="small">This is not a real payment or a withdrawable reward.</p>
+  </div>
+</section>
+
+<!-- BUSINESS -->
+<section id="business" class="screen">
+  <div class="eyebrow">BECOME AN ENTREPRENEUR</div>
+  <h1>Business opportunities</h1>
+  <p>Explore the types of businesses planned for the VYNDORA world.</p>
+  <div class="grid">
+    <div class="card"><div class="big">🍽️</div><h3>Restaurant</h3><p>Serve customers and build a food brand.</p><button class="button secondary" onclick="businessInfo('Restaurant')">Explore</button></div>
+    <div class="card"><div class="big">👗</div><h3>Fashion store</h3><p>Sell outfits, shoes and accessories.</p><button class="button secondary" onclick="businessInfo('Fashion store')">Explore</button></div>
+    <div class="card"><div class="big">🏨</div><h3>Hotel</h3><p>Welcome visitors and manage hospitality.</p><button class="button secondary" onclick="businessInfo('Hotel')">Explore</button></div>
+    <div class="card"><div class="big">💇</div><h3>Salon</h3><p>Offer hairstyles and beauty services.</p><button class="button secondary" onclick="businessInfo('Salon')">Explore</button></div>
+    <div class="card"><div class="big">🛒</div><h3>Supermarket</h3><p>Manage stock and serve the neighbourhood.</p><button class="button secondary" onclick="businessInfo('Supermarket')">Explore</button></div>
+    <div class="card"><div class="big">🎮</div><h3>Entertainment</h3><p>Own a club, arcade or event venue.</p><button class="button secondary" onclick="businessInfo('Entertainment venue')">Explore</button></div>
+  </div>
+  <div class="notice">Business ownership, staff management, sales and company earnings are planned systems. These cards are currently concept previews, not functioning businesses.</div>
+</section>
+
+<!-- GARAGE -->
+<section id="garage" class="screen">
+  <div class="eyebrow">YOUR VEHICLES</div>
+  <h1>Garage</h1>
+  <p>Choose the type of vehicle you want to own in the game.</p>
+  <div class="grid">
+    <div class="card"><div class="big">🚗</div><h3>Everyday cars</h3><p>Affordable vehicles for daily city travel.</p><button class="button secondary" onclick="vehicleInfo('Everyday car')">Select category</button></div>
+    <div class="card"><div class="big">🏎️</div><h3>Sports cars</h3><p>Performance vehicles and racing styles.</p><button class="button secondary" onclick="vehicleInfo('Sports car')">Select category</button></div>
+    <div class="card"><div class="big">🏍️</div><h3>Motorcycles</h3><p>Two-wheel transport for city journeys.</p><button class="button secondary" onclick="vehicleInfo('Motorcycle')">Select category</button></div>
+    <div class="card"><div class="big">🚙</div><h3>SUVs</h3><p>Family and luxury sport utility vehicles.</p><button class="button secondary" onclick="vehicleInfo('SUV')">Select category</button></div>
+    <div class="card"><div class="big">🚌</div><h3>Public transport</h3><p>Buses and shared city transport.</p><button class="button secondary" onclick="vehicleInfo('Bus')">Select category</button></div>
+    <div class="card"><div class="big">🚕</div><h3>Taxis</h3><p>Taxi and ride-hailing activities.</p><button class="button secondary" onclick="vehicleInfo('Taxi')">Select category</button></div>
+  </div>
+  <div class="card"><h3>My garage</h3><p id="garageChoice">No vehicle category selected.</p></div>
+</section>
+
+<!-- PHONE -->
+<section id="phone" class="screen">
+  <div class="eyebrow">YOUR PERSONAL DEVICE</div>
+  <h1>VYNDORA smartphone</h1>
+  <p>In-game phone interface preview.</p>
+  <div class="phone">
+    <div class="phone-top"><span>VYNDORA MOBILE</span><span id="phoneTime">--:--</span></div>
+    <h2 style="margin-top:25px">Hello, <span i
