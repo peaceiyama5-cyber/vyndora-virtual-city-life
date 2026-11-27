@@ -116,7 +116,12 @@ input{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;ba
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 const $=id=>document.getElementById(id);
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));window.scrollTo(0,0)}
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));
+  window.scrollTo(0,0);
+  if(id==='world') resizeCity();
+}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.screen));
 const state={gender:'male',skin:'#d69a70',cloth:'#2868d7',shoe:'#171717',style:'Casual',garment:'Top + trousers'};
 function circles(id,colors,key){$(id).innerHTML='';colors.forEach(c=>{const b=document.createElement('button');b.className='swatch'+(state[key]===c?' selected':'');b.style.background=c;b.title=c;b.onclick=()=>{state[key]=c;circles(id,colors,key);paint()};$(id).append(b)})}
