@@ -72,7 +72,7 @@ circles('shoes',['#171717','#ffffff','#8b4bd6','#b33b35','#b18a53'],'shoe');
 pills('styles',['Casual','Streetwear','Traditional','Smart Fashion'],'style');
 pills('garments',['Top + trousers','Gown / dress','Top + skirt','Traditional outfit'],'garment');
 const canvas=$('characterCanvas'),renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true}),scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.1,100);
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;camera.position.set(0,1.2,4.2);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;camera.position.set(0,1.2,6.2);
 scene.add(new THREE.HemisphereLight(0xffffff,0x39435e,2));const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(3,5,4);scene.add(light);
 const holder=new THREE.Group();scene.add(holder);const loader=new GLTFLoader();let model=null;
 const urls={male:'./casual-man%20(1)%20(2).glb',female:'./casual-woman%20(2).glb'};
