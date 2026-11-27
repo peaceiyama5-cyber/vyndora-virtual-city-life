@@ -138,6 +138,141 @@ let drag=false,last=0;canvas.onpointerdown=e=>{drag=true;last=e.clientX;canvas.s
 function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}window.addEventListener('resize',resize);resize();
 (function loop(){requestAnimationFrame(loop);renderer.render(scene,camera)})();
 load('male');
+  // VYNDORA 3D LAGOS CITY
+const cityCanvas = $('cityCanvas');
+const cityRenderer = new THREE.WebGLRenderer({
+  canvas: cityCanvas,
+  antialias: true
+});
+
+cityRenderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+cityRenderer.setSize(cityCanvas.clientWidth, cityCanvas.clientHeight, false);
+cityRenderer.shadowMap.enabled = true;
+
+const cityScene = new THREE.Scene();
+cityScene.background = new THREE.Color(0x87ceeb);
+cityScene.fog = new THREE.Fog(0x87ceeb, 35, 85);
+
+const cityCamera = new THREE.PerspectiveCamera(
+  55, 1, 0.1, 150
+);
+cityCamera.position.set(0, 12, 20);
+cityCamera.lookAt(0, 0, 0);
+
+cityScene.add(new THREE.HemisphereLight(0xffffff, 0x526044, 2));
+
+const citySun = new THREE.DirectionalLight(0xffffff, 2);
+citySun.position.set(10, 20, 10);
+cityScene.add(citySun);
+
+// Ground
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(80, 80),
+  new THREE.MeshStandardMaterial({color: 0x71945a})
+);
+ground.rotation.x = -Math.PI / 2;
+cityScene.add(ground);
+
+// Main roads
+function cityBox(x, y, z, w, h, d, color) {
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(w, h, d),
+    new THREE.MeshStandardMaterial({color})
+  );
+  mesh.position.set(x, y, z);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  cityScene.add(mesh);
+  return mesh;
+}
+
+cityBox(0, 0.06, 0, 80, 0.12, 9, 0x30343a);
+cityBox(0, 0.07, 0, 9, 0.13, 80, 0x30343a);
+
+// Sidewalks
+cityBox(0, 0.12, 5.2, 80, 0.2, 1.3, 0xb8b4a8);
+cityBox(0, 0.12, -5.2, 80, 0.2, 1.3, 0xb8b4a8);
+cityBox(5.2, 0.12, 0, 1.3, 0.2, 80, 0xb8b4a8);
+cityBox(-5.2, 0.12, 0, 1.3, 0.2, 80, 0xb8b4a8);
+
+// Buildings
+const buildingColors = [
+  0xd9b58a, 0xe5dfd1, 0xc5cbd0,
+  0xd7a16e, 0xb9c6b0, 0xe0c6ad
+];
+
+for (let x = -30; x <= 30; x += 10) {
+  for (let z = -30; z <= 30; z += 10) {
+    if (Math.abs(x) < 8 || Math.abs(z) < 8) continue;
+
+    const height = 4 + Math.random() * 10;
+    const color = buildingColors[
+      Math.floor(Math.random() * buildingColors.length)
+    ];
+
+    cityBox(x, height / 2, z, 6, height, 6, color);
+  }
+}
+
+// Player marker
+const cityPlayer = new THREE.Group();
+
+const playerBody = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.35, 0.4, 1.3, 12),
+  new THREE.MeshStandardMaterial({color: 0x2868d7})
+);
+playerBody.position.y = 0.8;
+cityPlayer.add(playerBody);
+
+const playerHead = new THREE.Mesh(
+  new THREE.SphereGeometry(0.3, 16, 16),
+  new THREE.MeshStandardMaterial({color: 0xd69a70})
+);
+playerHead.position.y = 1.65;
+cityPlayer.add(playerHead);
+
+cityScene.add(cityPlayer);
+
+// City controls
+$('enterCity').onclick = () => {
+  cityPlayer.position.set(0, 0, 0);
+};
+
+$('moveForward').onclick = () => {
+  cityPlayer.translateZ(-1);
+};
+
+$('moveBack').onclick = () => {
+  cityPlayer.translateZ(1);
+};
+
+$('turnLeft').onclick = () => {
+  cityPlayer.rotation.y += 0.25;
+};
+
+$('turnRight').onclick = () => {
+  cityPlayer.rotation.y -= 0.25;
+};
+
+// City screen sizing
+function resizeCity() {
+  const w = cityCanvas.clientWidth;
+  const h = cityCanvas.clientHeight;
+  if (!w || !h) return;
+
+  cityRenderer.setSize(w, h, false);
+  cityCamera.aspect = w / h;
+  cityCamera.updateProjectionMatrix();
+}
+
+window.addEventListener('resize', resizeCity);
+resizeCity();
+
+function animateCity() {
+  requestAnimationFrame(animateCity);
+  cityRenderer.render(cityScene, cityCamera);
+}
+animateCity();
 $('create').onclick=()=>{const name=$('playerName').value.trim();if(!name){alert('Please enter a character name.');return}localStorage.setItem('vyndoraCharacter',JSON.stringify({name,...state}));show('home');alert('Character saved on this device. Online accounts and multiplayer are not connected in this prototype yet.')};
 </script>
 </body></html>
