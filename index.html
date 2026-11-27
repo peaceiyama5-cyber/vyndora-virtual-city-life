@@ -49,9 +49,17 @@ input{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;ba
 <section id="garage" class="screen"><div class="panel"><h1>Garage</h1><div class="grid"><div class="card">Cars</div><div class="card">Motorcycles</div><div class="card">Public transport</div></div></div></section>
 <section id="phone" class="screen"><div class="panel"><h1>Your phone</h1><div class="grid"><div class="card">Messages</div><div class="card">Calls</div><div class="card">Contacts</div><div class="card">Jobs</div></div></div></section>
 </main>
+  <script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+  </script>
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 const $=id=>document.getElementById(id);
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));window.scrollTo(0,0)}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.screen));
