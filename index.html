@@ -120,7 +120,7 @@ function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));
   window.scrollTo(0,0);
-  if(id==='world') resizeCity();
+  if(id==='world') requestAnimationFrame(resizeCity);
 }
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.screen));
 const state={gender:'male',skin:'#d69a70',cloth:'#2868d7',shoe:'#171717',style:'Casual',garment:'Top + trousers'};
